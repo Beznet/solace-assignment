@@ -1,6 +1,6 @@
 "use client";
 
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SearchBar } from "@/components/SearchBar";
 import { Table } from "@/components/Table";
 
@@ -22,36 +22,34 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    const fetchAdvocates = async () => {
-      try {
-        const response = await fetch(
-          `/api/advocates?page=${currentPage}&limit=10`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const jsonResponse = await response.json();
-        setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
-        setTotalPages(jsonResponse.meta.totalPages);
-      } catch (error) {
-        console.error("Failed to fetch advocates:", error);
-      } finally {
-        setLoading(false);
+  const fetchAdvocates = async (page: number = 1) => {
+    try {
+      const response = await fetch(`/api/advocates?page=${page}&limit=10`);
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
       }
-    };
 
-    fetchAdvocates();
+      const jsonResponse = await response.json();
+      setAdvocates(jsonResponse.data);
+      setFilteredAdvocates(jsonResponse.data);
+      setTotalPages(jsonResponse.meta.totalPages);
+    } catch (error) {
+      console.error("Failed to fetch advocates:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAdvocates(currentPage);
   }, [currentPage]);
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchTerm(e.target.value);
+    setSearchTerm(value);
 
     if (value.trim() === "") {
-      setFilteredAdvocates(advocates);
+      fetchAdvocates(1);
       return;
     }
 
@@ -75,8 +73,8 @@ export default function Home() {
 
   const resetSearch = () => {
     setSearchTerm("");
-    setFilteredAdvocates(advocates);
     setCurrentPage(1);
+    fetchAdvocates(1);
   };
 
   const handlePageChange = (newPage: number) => {
