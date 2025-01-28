@@ -130,9 +130,14 @@ export default function Home() {
                   {advocate.degree}
                 </td>
                 <td className="px-4 py-2 text-center border border-gray-300">
-                  {advocate.specialties.map((s, idx) => (
-                    <div key={idx}>{s}</div>
-                  ))}
+                  {/* added overflow-y-auto to limit the height of the specialties for a cleaner table */}
+                  <div className="max-h-20 overflow-y-auto px-2">
+                    {advocate.specialties.map((s, idx) => (
+                      <p key={idx} className="text-sm">
+                        {s}
+                      </p>
+                    ))}
+                  </div>
                 </td>
 
                 <td className="px-4 py-2 text-center border border-gray-300">
