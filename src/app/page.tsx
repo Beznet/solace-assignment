@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
+import { formatPhoneNumber } from "./utils/formatPhoneNumber";
 
 export default function Home() {
   interface Advocate {
@@ -15,6 +16,7 @@ export default function Home() {
   }
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,8 +40,8 @@ export default function Home() {
     fetchAdvocates();
   }, []);
 
-  const searchAdvocates = (e) => {
-    const searchTerm = e.target.value;
+  const searchAdvocates = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
 
     document.getElementById("search-term").innerHTML = searchTerm;
 
@@ -49,8 +51,7 @@ export default function Home() {
         advocate.lastName.includes(searchTerm) ||
         advocate.city.includes(searchTerm) ||
         advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
+        advocate.specialties.includes(searchTerm)
       );
     });
 
@@ -58,7 +59,7 @@ export default function Home() {
   };
 
   const resetSearch = () => {
-    console.log(advocates);
+    setSearchTerm("");
     setFilteredAdvocates(advocates);
   };
 
@@ -70,6 +71,7 @@ export default function Home() {
           <input
             className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-3/4 md:w-1/2 lg:w-1/3"
             placeholder="Search advocates..."
+            value={searchTerm}
             onChange={searchAdvocates}
           />
           <button
@@ -144,7 +146,7 @@ export default function Home() {
                   {advocate.yearsOfExperience}
                 </td>
                 <td className="px-4 py-2 text-center border border-gray-300">
-                  {advocate.phoneNumber}
+                  {formatPhoneNumber(advocate.phoneNumber.toString())}
                 </td>
               </tr>
             ))}
