@@ -41,22 +41,22 @@ export default function Home() {
     fetchAdvocates();
   }, []);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
 
-    document.getElementById("search-term").innerHTML = searchTerm;
-
-    const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm)
+    try {
+      const response = await fetch(
+        `/api/advocates/search?searchTerm=${encodeURIComponent(searchTerm)}`
       );
-    });
+      if (!response.ok) {
+        throw new Error(`Error fetching advocates: ${response.status}`);
+      }
 
-    setFilteredAdvocates(filteredAdvocates);
+      const data = await response.json();
+      setFilteredAdvocates(data.data);
+    } catch (error) {
+      console.error("Failed to fetch advocates:", error);
+    }
   };
 
   const resetSearch = () => {
