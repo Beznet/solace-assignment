@@ -51,17 +51,17 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col m-6 p-6">
+    <main className="flex flex-col m-6 p-6 bg-slate-100 rounded-md shadow-md">
       <h1 className="text-3xl font-bold text-center mb-6">Solace Advocates</h1>
       <div className="mb-6">
         <div className="flex items-center gap-4 mt-2">
           <input
-            className="border border-gray-300 rounded-md p-2"
+            className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-3/4 md:w-1/2 lg:w-1/3"
             placeholder="Search advocates..."
             onChange={searchAdvocates}
           />
           <button
-            className="bg-blue-500 text-white px-4 py-2"
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
             onClick={resetSearch}
           >
             Reset
@@ -96,7 +96,10 @@ export default function Home() {
         </thead>
         <tbody>
           {filteredAdvocates.map((advocate, index) => (
-            <tr key={advocate.id}>
+            <tr
+              key={advocate.id}
+              className={index % 2 === 0 ? "bg-blue-100" : "bg-white"}
+            >
               <td className="px-4 py-2 text-center border border-gray-300">
                 {advocate.firstName}
               </td>
